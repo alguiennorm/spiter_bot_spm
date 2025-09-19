@@ -3,15 +3,12 @@
  * Welcome message.
  * Usage: .start
  */
-const helpText = `
-✨👋 *¡BIENVENIDO AL BOT DE TAREAS!* 📚✨
+const startText = `
+👋 ¡Bienvenido al *Bot de Ads*!
 
-Este bot te tira paro 💡 recordándote qué tareas tienes y cuándo se entregan.  
-✅ Organízate mejor  
-✅ Evita que se te pase la fecha  
-✅ Ten todo a la mano  
+Este bot te ayuda a promocionarte en grupos de manera más rápida 🚀
 
-👉 Manda el comando .cmd para ver el menú de ayuda 🚀
+📜 Para ver el menú de comandos, escribe: *.cmds*
 `;
 
 export default {
@@ -25,7 +22,7 @@ export default {
    */
   execute: async (sock, from, args) => {
     await sock.sendMessage(from, {
-      text: helpText,
+      text: startText,
     });
   }
 };
