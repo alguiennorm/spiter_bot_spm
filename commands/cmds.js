@@ -9,7 +9,8 @@ const cmdsText = `
 *✅ .start*           → Inicia el bot  
 *📜 .cmds*            → Muestra este menú  
 *👥 .grupos*          → Muestra los grupos disponibles  
-*🆘 .help*            → Comando de ayuda  
+*🆘 .help*            → Comando de ayuda
+*👷🏻 .createmensaje    → Crea tu mensaje de spam
 *💬 .mensaje*         → Muestra el mensaje guardado  
 *✏️ .updatemensaje*  → Actualiza el mensaje guardado  
 *📤 .enviarmensaje*   → Envía el mensaje a todos los grupos
