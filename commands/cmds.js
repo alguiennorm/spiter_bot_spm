@@ -12,7 +12,8 @@ const cmdsText = `
 *🆘 .help*            → Comando de ayuda
 *👷🏻 .createmensaje*    → Crea tu mensaje de spam
 *💬 .mensaje*         → Muestra el mensaje guardado  
-*✏️ .updatemensaje*  → Actualiza el mensaje guardado  
+*✏️ .updatemensaje*  → Actualiza el mensaje guardado 
+*🗑 .deletemensaje*   → Elimina el mensaje guardado
 *📤 .enviarmensaje*   → Envía el mensaje a todos los grupos
 `;
 
