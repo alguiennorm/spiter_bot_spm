@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^7.0.0-rc.3",
+    "js-yaml": "^4.1.0",
+    "pino": "^9.10.0",
+    "pino-pretty": "^13.1.1",
+    "qrcode": "^1.5.4"
+  }
+}
