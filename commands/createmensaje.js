@@ -30,7 +30,7 @@ export default {
     // Contenido por defecto o desde argumentos
     const contenido = args.length > 0
       ? args.join(' ')
-      : 'Este es el mensaje por defecto. Puedes actualizarlo con .updatemensaje';
+      : 'Este es el mensaje por defecto. Puedes actualizarlo con *.updatemensaje*';
 
     // Crear el archivo
     fs.writeFileSync(rutaArchivo, contenido, 'utf-8');
