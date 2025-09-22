@@ -93,6 +93,7 @@ const startSock = async () => {
 
     if (connection === 'open') {
       console.log('✅ Conexión establecida exitosamente')
+      console.log('📱 Número del bot:', sock.user.id)
     }
   })
 
