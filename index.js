@@ -14,6 +14,9 @@ import config from './utils.js' // o './utils.mjs' si cambias la extensión
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+const adminData = JSON.parse(fs.readFileSync(path.join(__dirname, 'admins.json'), 'utf-8'))
+const adminIDs = adminData.admins
+
 // Logging via pino
 const logDir = path.join(__dirname, "logs")
 if (!fs.existsSync(logDir)) { fs.mkdirSync(logDir) }
@@ -108,22 +111,36 @@ const startSock = async () => {
     const isCommand = body.startsWith('.')
 
     if (isCommand) {
-      const args = body.slice(1).trim().split(/ +/)
-      const commandName = args.shift()?.toLowerCase()
+  const args = body.slice(1).trim().split(/ +/)
+  const commandName = args.shift()?.toLowerCase()
 
-      const command = commands.get(commandName)
-      if (command) {
-        try {
-          await command.execute(sock, from, args)
-          logger.info(`✅ Comando ejecutado: ${commandName} desde ${from}`)
-        } catch (err) {
-          logger.error(`❌ Error ejecutando ${commandName}: ${err}`)
-          await sock.sendMessage(from, { text: '⚠️ Ocurrió un error al ejecutar el comando.' })
-        }
-      } else {
-        await sock.sendMessage(from, { text: `❓ Comando no reconocido: *${commandName}*` })
-      }
+  const command = commands.get(commandName)
+
+  // 🔐 Obtener ID del usuario (en grupo o privado)
+  const sender = msg.key.participant || msg.key.remoteJid
+
+  // 🔒 Verificar si el remitente está en la lista de admins
+  const isAdmin = adminIDs.includes(sender)
+
+  if (!isAdmin) {
+    await sock.sendMessage(from, { text: '🚫 No tienes permiso para usar comandos.' })
+    logger.warn(`⛔ Usuario no autorizado: ${sender} intentó usar el comando: ${commandName}`)
+    return
+  }
+
+  if (command) {
+    try {
+      await command.execute(sock, from, args)
+      logger.info(`✅ Comando ejecutado: ${commandName} desde ${sender}`)
+    } catch (err) {
+      logger.error(`❌ Error ejecutando ${commandName}: ${err}`)
+      await sock.sendMessage(from, { text: '⚠️ Ocurrió un error al ejecutar el comando.' })
     }
+  } else {
+    await sock.sendMessage(from, { text: `❓ Comando no reconocido: *${commandName}*` })
+  }
+}
+
   })
 }
 
