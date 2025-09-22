@@ -49,9 +49,9 @@ export default {
           }
         }
 
-        // Esperar 10 segundos antes del siguiente envío
+        // Esperar 1 milisegundo antes del siguiente envío
         if (index < groupJIDs.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 100))
+          await new Promise(resolve => setTimeout(resolve, 1))
         }
       }
 
