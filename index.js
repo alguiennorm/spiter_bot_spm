@@ -101,49 +101,56 @@ const startSock = async () => {
   const commands = await loadCommands()
   const eventHandlers = await loadEventHandlers()
 
-  // ✅ Listener para comandos
-  sock.ev.on('messages.upsert', async ({ messages, type }) => {
-    if (type !== 'notify') return
-    const msg = messages[0]
-    if (!msg.message || msg.key.fromMe) return
+  // ✅ Listener para comandos (versión mejorada)
+sock.ev.on('messages.upsert', async ({ messages, type }) => {
+  if (type !== 'notify') return
+  
+  for (const msg of messages) {
+    if (!msg.message || msg.key.fromMe) continue
 
     const from = msg.key.remoteJid
     const body = msg.message?.conversation || msg.message?.extendedTextMessage?.text || ''
-    const isCommand = body.startsWith('.')
+    const isCommand = body.startsWith('.') || 
+                     (msg.message?.imageMessage?.caption && 
+                      msg.message.imageMessage.caption.startsWith('.'))
 
     if (isCommand) {
-  const args = body.slice(1).trim().split(/ +/)
-  const commandName = args.shift()?.toLowerCase()
+      // Obtener el texto del comando (puede venir de diferentes fuentes)
+      let commandText = body
+      if (!commandText && msg.message?.imageMessage?.caption) {
+        commandText = msg.message.imageMessage.caption
+      }
 
-  const command = commands.get(commandName)
+      const args = commandText.slice(1).trim().split(/ +/)
+      const commandName = args.shift()?.toLowerCase()
 
-  // 🔐 Obtener ID del usuario (en grupo o privado)
-  const sender = msg.key.participant || msg.key.remoteJid
+      const command = commands.get(commandName)
 
-  // 🔒 Verificar si el remitente está en la lista de admins
-  const isAdmin = adminIDs.includes(sender)
+      // 🔐 Obtener ID del usuario (en grupo o privado)
+      const sender = msg.key.participant || msg.key.remoteJid
 
-  if (!isAdmin) {
-    await sock.sendMessage(from, { text: '🚫 No tienes permiso para usar comandos.' })
-    logger.warn(`⛔ Usuario no autorizado: ${sender} intentó usar el comando: ${commandName}`)
-    return
-  }
+      // 🔒 Verificar si el remitente está en la lista de admins
+      const isAdmin = adminIDs.includes(sender)
 
-  if (command) {
-    try {
-      await command.execute(sock, from, args)
-      logger.info(`✅ Comando ejecutado: ${commandName} desde ${sender}`)
-    } catch (err) {
-      logger.error(`❌ Error ejecutando ${commandName}: ${err}`)
-      await sock.sendMessage(from, { text: '⚠️ Ocurrió un error al ejecutar el comando.' })
+      if (!isAdmin) {
+        await sock.sendMessage(from, { text: '🚫 No tienes permiso para usar comandos.' })
+        logger.warn(`⛔ Usuario no autorizado: ${sender} intentó usar el comando: ${commandName}`)
+        continue
+      }
+
+      if (command) {
+        try {
+          await command.execute(sock, from, args, msg)
+          logger.info(`✅ Comando ejecutado: ${commandName} desde ${sender}`)
+        } catch (err) {
+          logger.error(`❌ Error ejecutando ${commandName}: ${err}`)
+          await sock.sendMessage(from, { text: '⚠️ Ocurrió un error al ejecutar el comando.' })
+        }
+      } else {
+        await sock.sendMessage(from, { text: `❓ Comando no reconocido: *${commandName}*` })
+      }
     }
-  } else {
-    await sock.sendMessage(from, { text: `❓ Comando no reconocido: *${commandName}*` })
   }
+})
 }
-
-  })
-}
-
-
 startSock()

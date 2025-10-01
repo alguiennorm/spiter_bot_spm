@@ -1,1 +1,1 @@
-*ESTE ES UN MENSAJE DE PRUEBA PARA CALAR EL ENVÍO DE SPAM*
+Este es el mensaje por defecto. Puedes actualizarlo con *.updatemensaje*

@@ -15,6 +15,14 @@ const cmdsText = `
 *✏️ .updatemensaje*  → Actualiza el mensaje guardado 
 *🗑 .deletemensaje*   → Elimina el mensaje guardado
 *📤 .enviarmensaje*   → Envía el mensaje a todos los grupos
+
+*🕹 V2 commands con imagen 🕹*
+
+*👷🏻 .createmensajev2*   → Crear mensaje de spam con imagen
+*💬 .mensajev2*  → Muestra tu mensaje guardado
+*✏️ .updatemensaje2*  → Actualiza tu mensaje guaradado
+*🗑  .deletemensaje2* → Elimina el mensaje guardado
+*📤 .enviarmensaje2* → Envia tu mensaje a todos los grupos
 `;
 
 export default {
